@@ -1,9 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48" role="img" aria-labelledby="aw-title">
   <title id="aw-title">Agentwatcher Logo</title>
-  <g transform="translate(4, 6)">
-    <path d="M8 2L2 18L8 34" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M28 2L34 18L28 34" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="18" cy="18" r="4.5" fill="#0A0A0A"/>
+  <g transform="translate(4, 4)">
+    <!-- Outer arc -->
+    <path d="M32 20a12 12 0 0 0-12-12" fill="none" stroke="#fafafa" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+    <!-- Middle arc -->
+    <path d="M28 20a8 8 0 0 0-8-8" fill="none" stroke="#fafafa" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <!-- Inner arc -->
+    <path d="M24 20a4 4 0 0 0-4-4" fill="none" stroke="#fafafa" stroke-width="2" stroke-linecap="round"/>
+    <!-- Center dot -->
+    <circle cx="20" cy="20" r="3" fill="#fafafa"/>
+    <!-- Crosshair lines -->
+    <line x1="20" y1="4" x2="20" y2="14" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
+    <line x1="20" y1="26" x2="20" y2="36" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
+    <line x1="4" y1="20" x2="14" y2="20" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
+    <line x1="26" y1="20" x2="36" y2="20" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
   </g>
-  <text x="48" y="32" font-family="Inter, -apple-system, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="-0.5" fill="#0A0A0A">Agentwatcher</text>
+  <text x="50" y="32" font-family="Inter, -apple-system, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="-0.5" fill="#fafafa">Agentwatcher</text>
 </svg>
