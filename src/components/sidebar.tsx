@@ -36,8 +36,8 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-bg-surface border-r border-border flex flex-col">
       <div className="px-4 py-4">
-        <Link href="/" className="text-sm font-semibold text-text tracking-tight">
-          Agent Observation
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/logo.svg" alt="Agentwatcher" className="h-5 invert" />
         </Link>
       </div>
 
