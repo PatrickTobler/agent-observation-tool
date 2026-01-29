@@ -64,7 +64,13 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="px-2 pb-4">
+      <div className="px-2 pb-4 space-y-0.5">
+        <a
+          href="/docs"
+          className="block px-2 py-1.5 text-sm text-text-tertiary hover:text-text transition-colors rounded-md hover:bg-bg-surface-hover"
+        >
+          API Docs
+        </a>
         <a
           href="/api/v1/auth/logout"
           className="block px-2 py-1.5 text-sm text-text-tertiary hover:text-text transition-colors rounded-md hover:bg-bg-surface-hover"

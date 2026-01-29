@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
   const response = NextResponse.redirect(new URL("/app/agents", baseUrl));
   response.cookies.set("session_id", sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NEXT_PUBLIC_BASE_URL?.startsWith("https") ?? process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60,
     path: "/",

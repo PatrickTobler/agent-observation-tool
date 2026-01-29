@@ -47,10 +47,41 @@ export default async function AgentsPage() {
     <div>
       <h1 className="text-lg font-semibold text-text mb-6">Agents</h1>
       {agents.length === 0 ? (
-        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
-          <p className="text-sm text-text-tertiary mb-2">No agents yet</p>
-          <p className="text-xs text-text-muted">
-            Start sending events via the API to see your agents here.
+        <div className="border border-border rounded-lg bg-bg-surface p-8">
+          <p className="text-sm text-text-tertiary mb-1">No agents yet</p>
+          <p className="text-xs text-text-muted mb-6">
+            Send your first event to get started:
+          </p>
+          <div className="border border-border-subtle rounded-md bg-bg overflow-hidden text-left">
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-border-subtle">
+              <span className="w-2 h-2 rounded-full bg-error/60" />
+              <span className="w-2 h-2 rounded-full bg-warning/60" />
+              <span className="w-2 h-2 rounded-full bg-success/60" />
+              <span className="ml-2 text-[11px] text-text-muted font-mono">bash</span>
+            </div>
+            <pre className="p-4 text-xs font-mono text-text-secondary overflow-x-auto leading-relaxed">
+{`curl -X POST /api/v1/eval-events \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "agent_name": "my-agent",
+    "task_id": "task_1",
+    "interaction_type": "Result",
+    "message": "Completed the task successfully",
+    "ts": "2026-01-30T12:00:00Z"
+  }'`}
+            </pre>
+          </div>
+          <p className="text-xs text-text-muted mt-4">
+            Create an API key in{" "}
+            <Link href="/app/settings/api-keys" className="text-text-secondary hover:text-text transition-colors underline underline-offset-2">
+              Settings
+            </Link>{" "}
+            first. See the{" "}
+            <Link href="/docs" className="text-text-secondary hover:text-text transition-colors underline underline-offset-2">
+              API docs
+            </Link>{" "}
+            for the full reference.
           </p>
         </div>
       ) : (
