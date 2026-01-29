@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb, schema } from "@/db";
 import { eq } from "drizzle-orm";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const sessionId = req.cookies.get("session_id")?.value;
   if (sessionId) {
     const db = getDb();
@@ -12,7 +12,8 @@ export async function POST(req: NextRequest) {
       .run();
   }
 
-  const response = NextResponse.json({ ok: true });
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || req.url;
+  const response = NextResponse.redirect(new URL("/", baseUrl));
   response.cookies.delete("session_id");
   return response;
 }

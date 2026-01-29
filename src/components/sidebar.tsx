@@ -65,14 +65,12 @@ export function Sidebar() {
       </nav>
 
       <div className="px-2 pb-4">
-        <form action="/api/v1/auth/logout" method="POST">
-          <button
-            type="submit"
-            className="w-full text-left px-2 py-1.5 text-sm text-text-tertiary hover:text-text transition-colors rounded-md hover:bg-bg-surface-hover"
-          >
-            Sign out
-          </button>
-        </form>
+        <a
+          href="/api/v1/auth/logout"
+          className="block px-2 py-1.5 text-sm text-text-tertiary hover:text-text transition-colors rounded-md hover:bg-bg-surface-hover"
+        >
+          Sign out
+        </a>
       </div>
     </aside>
   );

@@ -54,7 +54,8 @@ export async function GET(req: NextRequest) {
     })
     .run();
 
-  const response = NextResponse.redirect(new URL("/app/agents", req.url));
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || req.url;
+  const response = NextResponse.redirect(new URL("/app/agents", baseUrl));
   response.cookies.set("session_id", sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
