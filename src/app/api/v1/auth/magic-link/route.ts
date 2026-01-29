@@ -3,6 +3,7 @@ import { getDb, schema } from "@/db";
 import { generateId, hashToken } from "@/lib/crypto";
 import { randomBytes } from "crypto";
 import { eq } from "drizzle-orm";
+import { InboundNewEmailProvider } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -45,8 +46,17 @@ export async function POST(req: NextRequest) {
     })
     .run();
 
-  // TODO: Send email via inbound.new
-  // For now, in dev, return the token in response (remove in production)
+  const apiKey = process.env.INBOUND_NEW_API_KEY;
+  if (apiKey) {
+    try {
+      const emailProvider = new InboundNewEmailProvider(apiKey);
+      await emailProvider.sendMagicLink(email, token);
+    } catch (e) {
+      console.error("Failed to send magic link email:", e);
+      return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
+    }
+  }
+
   const isDev = process.env.NODE_ENV !== "production";
 
   return NextResponse.json({
