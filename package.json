@@ -14,6 +14,7 @@
   "dependencies": {
     "better-sqlite3": "^12.6.2",
     "drizzle-orm": "^0.45.1",
+    "inboundemail": "^0.20.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
