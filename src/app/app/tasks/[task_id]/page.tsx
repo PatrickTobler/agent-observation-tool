@@ -1,9 +1,12 @@
 import { getDb, schema } from "@/db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { JsonViewer } from "@/components/json-viewer";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { StatusBadge, InteractionBadge } from "@/components/ui/badge";
+import { formatScore, relativeTime } from "@/lib/format";
 
 async function getWorkspaceId() {
   const cookieStore = await cookies();
@@ -24,27 +27,14 @@ async function getWorkspaceId() {
   return session.workspaceId;
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    succeeded: "bg-black text-white",
-    failed: "bg-neutral-200 text-black",
-    unknown: "bg-neutral-100 text-neutral-500",
-  };
-  return (
-    <span className={`text-xs px-2 py-0.5 rounded ${styles[status] || styles.unknown}`}>
-      {status}
-    </span>
-  );
-}
-
-const typeStyles: Record<string, string> = {
-  UserInput: "border-l-neutral-400",
-  ToolCall: "border-l-neutral-600",
-  McpCall: "border-l-neutral-600",
-  SkillCall: "border-l-neutral-600",
-  Reasoning: "border-l-neutral-300",
-  Result: "border-l-black",
-  Error: "border-l-red-400",
+const typeColors: Record<string, string> = {
+  UserInput: "border-l-blue-500",
+  ToolCall: "border-l-purple-500",
+  McpCall: "border-l-purple-500",
+  SkillCall: "border-l-violet-500",
+  Reasoning: "border-l-border",
+  Result: "border-l-success",
+  Error: "border-l-error",
 };
 
 export default async function TaskDetailPage({
@@ -72,14 +62,15 @@ export default async function TaskDetailPage({
   if (events.length === 0) {
     return (
       <div>
-        <div className="text-sm text-neutral-500 mb-4">
-          <Link href="/app/agents" className="hover:text-black">
-            Agents
-          </Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-black">Task not found</span>
+        <Breadcrumb
+          items={[
+            { label: "Agents", href: "/app/agents" },
+            { label: "Task not found" },
+          ]}
+        />
+        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
+          <p className="text-sm text-text-tertiary">No events found for this task.</p>
         </div>
-        <p className="text-neutral-500 text-sm">No events found for this task.</p>
       </div>
     );
   }
@@ -89,7 +80,7 @@ export default async function TaskDetailPage({
   const hasResult = events.some((e) => e.interactionType === "Result");
   const status = hasError ? "failed" : hasResult ? "succeeded" : "unknown";
 
-  const score = db
+  const scoreRow = db
     .select({
       score: schema.evalScores.score1To10,
       verdict: schema.evalScores.verdictText,
@@ -103,66 +94,55 @@ export default async function TaskDetailPage({
     )
     .get();
 
+  const score = formatScore(scoreRow?.score ?? null);
+
   return (
     <div>
-      <div className="text-sm text-neutral-500 mb-4">
-        <Link href="/app/agents" className="hover:text-black">
-          Agents
-        </Link>
-        <span className="mx-1.5">/</span>
-        <Link
-          href={`/app/agents/${encodeURIComponent(agentName)}`}
-          className="hover:text-black"
-        >
-          {agentName}
-        </Link>
-        <span className="mx-1.5">/</span>
-        <span className="text-black">Task</span>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "Agents", href: "/app/agents" },
+          { label: agentName, href: `/app/agents/${encodeURIComponent(agentName)}` },
+          { label: "Task" },
+        ]}
+      />
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-xl font-medium">Task</h1>
+          <h1 className="text-lg font-semibold text-text">Task</h1>
           <StatusBadge status={status} />
         </div>
-        <div className="text-sm text-neutral-500 font-mono">{taskId}</div>
-        <div className="text-sm text-neutral-500 mt-1">
-          Agent: <span className="text-black">{agentName}</span>
+        <div className="text-sm text-text-muted font-mono">{taskId}</div>
+        <div className="text-sm text-text-tertiary mt-1">
+          Agent: <Link href={`/app/agents/${encodeURIComponent(agentName)}`} className="text-text hover:text-accent transition-colors">{agentName}</Link>
         </div>
-        {score && (
+        {scoreRow && (
           <div className="flex items-center gap-4 mt-3">
-            {score.score !== null && (
-              <div className="text-sm">
-                Score: <span className="font-medium">{score.score}/10</span>
-              </div>
-            )}
-            {score.verdict && (
-              <div className="text-sm text-neutral-600">{score.verdict}</div>
+            <span className={`text-sm font-medium ${score.className}`}>{score.text}</span>
+            {scoreRow.verdict && (
+              <span className="text-sm text-text-tertiary">{scoreRow.verdict}</span>
             )}
           </div>
         )}
       </div>
 
-      <h2 className="text-sm font-medium text-neutral-500 mb-4">
+      <h2 className="text-xs font-medium text-text-tertiary uppercase tracking-wider mb-4">
         Event Timeline ({events.length})
       </h2>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         {events.map((event) => (
           <div
             key={event.id}
-            className={`border-l-2 pl-4 py-2 ${typeStyles[event.interactionType] || "border-l-neutral-200"}`}
+            className={`border-l-2 pl-4 py-3 ${typeColors[event.interactionType] || "border-l-border"}`}
           >
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-medium text-neutral-600">
-                {event.interactionType}
-              </span>
-              <span className="text-xs text-neutral-400">
-                {new Date(event.ts).toLocaleString()}
+            <div className="flex items-center gap-2 mb-1.5">
+              <InteractionBadge type={event.interactionType} />
+              <span className="text-xs text-text-muted font-mono tabular-nums">
+                {relativeTime(event.ts)}
               </span>
             </div>
             {event.message && (
-              <p className="text-sm text-neutral-800 mb-2">{event.message}</p>
+              <p className="text-sm text-text-secondary mb-2">{event.message}</p>
             )}
             <div className="flex flex-col gap-1">
               <JsonViewer data={event.payloadJson} label="Payload" />

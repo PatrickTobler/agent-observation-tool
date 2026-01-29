@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 
 interface EvalConfig {
   rubricText: string | null;
@@ -66,82 +69,60 @@ export default function EvaluationPage() {
   }
 
   if (loading) {
-    return <div className="text-sm text-neutral-500">Loading...</div>;
+    return <div className="text-sm text-text-muted">Loading...</div>;
   }
 
   return (
     <div>
-      <div className="text-sm text-neutral-500 mb-4">
-        <Link href="/app/agents" className="hover:text-black">
-          Agents
-        </Link>
-        <span className="mx-1.5">/</span>
-        <Link
-          href={`/app/agents/${encodeURIComponent(agentName)}`}
-          className="hover:text-black"
-        >
-          {agentName}
-        </Link>
-        <span className="mx-1.5">/</span>
-        <span className="text-black">Evaluation</span>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "Agents", href: "/app/agents" },
+          { label: agentName, href: `/app/agents/${encodeURIComponent(agentName)}` },
+          { label: "Evaluation" },
+        ]}
+      />
 
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-xl font-medium">Evaluation Config</h1>
+        <h1 className="text-lg font-semibold text-text">Evaluation Config</h1>
         {version > 0 && (
-          <span className="text-xs text-neutral-400">v{version}</span>
+          <span className="text-xs text-text-muted font-mono">v{version}</span>
         )}
       </div>
 
       <div className="max-w-xl flex flex-col gap-6">
         <div>
-          <label className="block text-sm font-medium mb-1.5">Rubric</label>
-          <textarea
+          <label className="block text-sm font-medium text-text mb-1.5">Rubric</label>
+          <Textarea
             value={rubricText}
             onChange={(e) => setRubricText(e.target.value)}
             rows={6}
-            className="w-full border border-neutral-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-neutral-400 resize-y"
             placeholder="Describe how the agent should be evaluated..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">Expected Output</label>
-          <textarea
+          <label className="block text-sm font-medium text-text mb-1.5">Expected Output</label>
+          <Textarea
             value={expectedText}
             onChange={(e) => setExpectedText(e.target.value)}
             rows={4}
-            className="w-full border border-neutral-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-neutral-400 resize-y"
             placeholder="Expected output for comparison..."
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsEnabled(!isEnabled)}
-            className={`w-9 h-5 rounded-full transition-colors ${
-              isEnabled ? "bg-black" : "bg-neutral-300"
-            } relative`}
-          >
-            <span
-              className={`block w-3.5 h-3.5 rounded-full bg-white absolute top-0.5 transition-transform ${
-                isEnabled ? "translate-x-4" : "translate-x-0.5"
-              }`}
-            />
-          </button>
-          <span className="text-sm">Evaluation enabled</span>
+        <div className="flex items-center gap-3">
+          <Toggle checked={isEnabled} onChange={setIsEnabled} />
+          <span className="text-sm text-text-secondary">Evaluation enabled</span>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="bg-black text-white text-sm px-4 py-1.5 rounded hover:bg-neutral-800 disabled:opacity-50"
-          >
+          <Button onClick={handleSave} disabled={saving}>
             {saving ? "Saving..." : "Save"}
-          </button>
+          </Button>
           {message && (
-            <span className="text-sm text-neutral-500">{message}</span>
+            <span className={`text-sm ${message === "Saved." ? "text-success" : "text-error"}`}>
+              {message}
+            </span>
           )}
         </div>
       </div>

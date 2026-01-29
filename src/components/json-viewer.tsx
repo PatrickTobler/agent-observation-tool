@@ -13,8 +13,8 @@ export function JsonViewer({ data, label }: { data: string | null; label: string
   } catch {
     return (
       <div className="text-sm">
-        <span className="text-neutral-500">{label}:</span>{" "}
-        <span className="text-neutral-700">{data}</span>
+        <span className="text-text-muted">{label}:</span>{" "}
+        <span className="text-text-secondary">{data}</span>
       </div>
     );
   }
@@ -23,13 +23,13 @@ export function JsonViewer({ data, label }: { data: string | null; label: string
     <div className="text-sm">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="text-neutral-500 hover:text-black flex items-center gap-1"
+        className="text-text-muted hover:text-text flex items-center gap-1 transition-colors"
       >
         <span className="text-xs">{expanded ? "▼" : "▶"}</span>
         {label}
       </button>
       {expanded && (
-        <pre className="mt-1 p-3 bg-neutral-50 border border-neutral-200 rounded text-xs overflow-x-auto whitespace-pre-wrap break-all">
+        <pre className="mt-1 p-3 bg-bg-elevated border border-border-subtle rounded-md text-xs font-mono text-text-secondary overflow-x-auto whitespace-pre-wrap break-all">
           {JSON.stringify(parsed, null, 2)}
         </pre>
       )}

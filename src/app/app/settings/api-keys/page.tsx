@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Table, TableHead, TableBody, TableRow, TableHeaderCell, TableCell, TableHeaderRow } from "@/components/ui/table";
+import { relativeTime } from "@/lib/format";
 
 interface ApiKeyRow {
   id: string;
@@ -56,87 +60,82 @@ export default function ApiKeysPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-medium mb-6">API Keys</h1>
+      <h1 className="text-lg font-semibold text-text mb-6">API Keys</h1>
 
       <div className="mb-8 max-w-md">
         <div className="flex gap-2">
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Key name"
-            className="flex-1 border border-neutral-200 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-neutral-400"
+            className="flex-1"
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
           />
-          <button
-            onClick={handleCreate}
-            disabled={creating || !name.trim()}
-            className="bg-black text-white text-sm px-4 py-1.5 rounded hover:bg-neutral-800 disabled:opacity-50"
-          >
+          <Button onClick={handleCreate} disabled={creating || !name.trim()}>
             {creating ? "Creating..." : "Create"}
-          </button>
+          </Button>
         </div>
 
         {newSecret && (
-          <div className="mt-3 p-3 bg-neutral-50 border border-neutral-200 rounded">
-            <p className="text-xs text-neutral-500 mb-1">
+          <div className="mt-3 p-3 bg-accent-subtle border border-blue-900/50 rounded-lg">
+            <p className="text-xs text-text-tertiary mb-1.5">
               Copy this secret now. It will not be shown again.
             </p>
-            <code className="text-sm font-mono break-all select-all">{newSecret}</code>
+            <code className="text-sm font-mono text-accent-text break-all select-all">
+              {newSecret}
+            </code>
           </div>
         )}
       </div>
 
       {loading ? (
-        <p className="text-sm text-neutral-500">Loading...</p>
+        <p className="text-sm text-text-muted">Loading...</p>
       ) : keys.length === 0 ? (
-        <p className="text-sm text-neutral-500">No API keys yet.</p>
+        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
+          <p className="text-sm text-text-tertiary">No API keys yet.</p>
+        </div>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-neutral-200 text-left text-neutral-500">
-              <th className="pb-2 font-medium">Name</th>
-              <th className="pb-2 font-medium">Prefix</th>
-              <th className="pb-2 font-medium">Created</th>
-              <th className="pb-2 font-medium">Last Used</th>
-              <th className="pb-2 font-medium">Status</th>
-              <th className="pb-2 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead>
+            <TableHeaderRow>
+              <TableHeaderCell>Name</TableHeaderCell>
+              <TableHeaderCell>Prefix</TableHeaderCell>
+              <TableHeaderCell>Created</TableHeaderCell>
+              <TableHeaderCell>Last Used</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell></TableHeaderCell>
+            </TableHeaderRow>
+          </TableHead>
+          <TableBody>
             {keys.map((k) => (
-              <tr key={k.id} className="border-b border-neutral-100">
-                <td className="py-2.5">{k.name}</td>
-                <td className="py-2.5 font-mono text-xs text-neutral-600">
-                  {k.prefix}...
-                </td>
-                <td className="py-2.5 text-neutral-500">
-                  {new Date(k.createdAt).toLocaleDateString()}
-                </td>
-                <td className="py-2.5 text-neutral-500">
-                  {k.lastUsedAt ? new Date(k.lastUsedAt).toLocaleDateString() : "Never"}
-                </td>
-                <td className="py-2.5">
+              <TableRow key={k.id}>
+                <TableCell className="text-text font-medium">{k.name}</TableCell>
+                <TableCell mono>{k.prefix}...</TableCell>
+                <TableCell className="text-text-muted">
+                  {relativeTime(k.createdAt)}
+                </TableCell>
+                <TableCell className="text-text-muted">
+                  {k.lastUsedAt ? relativeTime(k.lastUsedAt) : "Never"}
+                </TableCell>
+                <TableCell>
                   {k.revokedAt ? (
-                    <span className="text-xs text-neutral-400">Revoked</span>
+                    <span className="text-xs text-text-muted">Revoked</span>
                   ) : (
-                    <span className="text-xs text-black">Active</span>
+                    <span className="text-xs text-success">Active</span>
                   )}
-                </td>
-                <td className="py-2.5 text-right">
+                </TableCell>
+                <TableCell className="text-right">
                   {!k.revokedAt && (
-                    <button
-                      onClick={() => handleRevoke(k.id)}
-                      className="text-xs text-neutral-400 hover:text-black"
-                    >
+                    <Button variant="ghost" onClick={() => handleRevoke(k.id)} className="text-xs text-text-muted hover:text-error">
                       Revoke
-                    </button>
+                    </Button>
                   )}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

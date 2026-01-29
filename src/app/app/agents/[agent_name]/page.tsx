@@ -3,6 +3,12 @@ import { getDb, schema } from "@/db";
 import { eq, and, sql } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { StatusBadge } from "@/components/ui/badge";
+import { StatCard } from "@/components/ui/stat-card";
+import { Button } from "@/components/ui/button";
+import { Table, TableHead, TableBody, TableRow, TableHeaderCell, TableCell, TableHeaderRow } from "@/components/ui/table";
+import { relativeTime, formatScore } from "@/lib/format";
 
 async function getWorkspaceId() {
   const cookieStore = await cookies();
@@ -21,19 +27,6 @@ async function getWorkspaceId() {
   }
 
   return session.workspaceId;
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    succeeded: "bg-black text-white",
-    failed: "bg-neutral-200 text-black",
-    unknown: "bg-neutral-100 text-neutral-500",
-  };
-  return (
-    <span className={`text-xs px-2 py-0.5 rounded ${styles[status] || styles.unknown}`}>
-      {status}
-    </span>
-  );
 }
 
 export default async function AgentDetailPage({
@@ -92,77 +85,69 @@ export default async function AgentDetailPage({
 
   return (
     <div>
-      <div className="text-sm text-neutral-500 mb-4">
-        <Link href="/app/agents" className="hover:text-black">
-          Agents
-        </Link>
-        <span className="mx-1.5">/</span>
-        <span className="text-black">{agentName}</span>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "Agents", href: "/app/agents" },
+          { label: agentName },
+        ]}
+      />
 
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-xl font-medium">{agentName}</h1>
-        <Link
-          href={`/app/agents/${encodeURIComponent(agentName)}/evaluation`}
-          className="text-sm text-neutral-500 hover:text-black border border-neutral-200 px-3 py-1.5 rounded"
-        >
-          Evaluation Config
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-lg font-semibold text-text">{agentName}</h1>
+        <Link href={`/app/agents/${encodeURIComponent(agentName)}/evaluation`}>
+          <Button variant="secondary">Evaluation Config</Button>
         </Link>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="border border-neutral-200 rounded p-4">
-          <div className="text-2xl font-medium">{tasks.length}</div>
-          <div className="text-xs text-neutral-500 mt-1">Total Tasks</div>
-        </div>
-        <div className="border border-neutral-200 rounded p-4">
-          <div className="text-2xl font-medium">{succeeded}</div>
-          <div className="text-xs text-neutral-500 mt-1">Succeeded</div>
-        </div>
-        <div className="border border-neutral-200 rounded p-4">
-          <div className="text-2xl font-medium">{failed}</div>
-          <div className="text-xs text-neutral-500 mt-1">Failed</div>
-        </div>
+        <StatCard value={tasks.length} label="Total Tasks" />
+        <StatCard value={succeeded} label="Succeeded" />
+        <StatCard value={failed} label="Failed" />
       </div>
 
       {tasksWithStatus.length === 0 ? (
-        <p className="text-neutral-500 text-sm">No tasks recorded yet.</p>
+        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
+          <p className="text-sm text-text-tertiary">No tasks recorded yet.</p>
+        </div>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-neutral-200 text-left text-neutral-500">
-              <th className="pb-2 font-medium">Task ID</th>
-              <th className="pb-2 font-medium">Status</th>
-              <th className="pb-2 font-medium">Started</th>
-              <th className="pb-2 font-medium">Events</th>
-              <th className="pb-2 font-medium">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tasksWithStatus.map((task) => (
-              <tr key={task.taskId} className="border-b border-neutral-100">
-                <td className="py-2.5">
-                  <Link
-                    href={`/app/tasks/${encodeURIComponent(task.taskId)}`}
-                    className="text-black hover:underline font-mono text-xs"
-                  >
-                    {task.taskId}
-                  </Link>
-                </td>
-                <td className="py-2.5">
-                  <StatusBadge status={task.status} />
-                </td>
-                <td className="py-2.5 text-neutral-500">
-                  {task.startedAt ? new Date(task.startedAt).toLocaleString() : "—"}
-                </td>
-                <td className="py-2.5 text-neutral-600">{task.eventsCount}</td>
-                <td className="py-2.5 text-neutral-600">
-                  {task.score !== null ? `${task.score}/10` : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Table>
+          <TableHead>
+            <TableHeaderRow>
+              <TableHeaderCell>Task ID</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>Started</TableHeaderCell>
+              <TableHeaderCell>Events</TableHeaderCell>
+              <TableHeaderCell>Score</TableHeaderCell>
+            </TableHeaderRow>
+          </TableHead>
+          <TableBody>
+            {tasksWithStatus.map((task) => {
+              const score = formatScore(task.score);
+              return (
+                <TableRow key={task.taskId}>
+                  <TableCell>
+                    <Link
+                      href={`/app/tasks/${encodeURIComponent(task.taskId)}`}
+                      className="font-mono text-xs text-text hover:text-accent transition-colors"
+                    >
+                      {task.taskId}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={task.status} />
+                  </TableCell>
+                  <TableCell className="text-text-muted">
+                    {task.startedAt ? relativeTime(task.startedAt) : "—"}
+                  </TableCell>
+                  <TableCell mono>{task.eventsCount}</TableCell>
+                  <TableCell>
+                    <span className={score.className}>{score.text}</span>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       )}
     </div>
   );
