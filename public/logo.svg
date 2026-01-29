@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48" role="img" aria-labelledby="aw-title">
+  <title id="aw-title">Agentwatcher Logo</title>
+  <g transform="translate(4, 6)">
+    <path d="M8 2L2 18L8 34" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M28 2L34 18L28 34" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="18" cy="18" r="4.5" fill="#0A0A0A"/>
+  </g>
+  <text x="48" y="32" font-family="Inter, -apple-system, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="-0.5" fill="#0A0A0A">Agentwatcher</text>
+</svg>

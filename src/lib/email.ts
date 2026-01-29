@@ -18,7 +18,7 @@ export class InboundNewEmailProvider implements EmailProvider {
     await this.client.emails.send({
       from: "no-reply@agents.nmkr.io",
       to: email,
-      subject: "Your login link — Agent Observation Tool",
+      subject: "Your login link — Agentwatcher",
       html: `<p>Click the link below to log in:</p><p><a href="${link}">${link}</a></p><p>This link expires in 15 minutes.</p>`,
     });
   }

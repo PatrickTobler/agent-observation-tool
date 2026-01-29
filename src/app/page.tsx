@@ -6,7 +6,7 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-text tracking-tight">
-            Agent Observation
+            Agentwatcher
           </Link>
           <div className="flex items-center gap-3">
             <Link
@@ -17,7 +17,7 @@ export default function Home() {
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-accent text-white hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-accent text-bg hover:bg-accent-hover transition-colors"
             >
               Get Started
             </Link>
@@ -37,7 +37,7 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-20">
             <Link
               href="/login"
-              className="inline-flex items-center h-9 px-4 rounded-md text-sm font-medium bg-accent text-white hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center h-9 px-4 rounded-md text-sm font-medium bg-accent text-bg hover:bg-accent-hover transition-colors"
             >
               Start for free
             </Link>
@@ -89,7 +89,7 @@ export default function Home() {
 
       <footer className="border-t border-border">
         <div className="max-w-3xl mx-auto px-6 py-8 flex items-center justify-between text-xs text-text-muted">
-          <span>Agent Observation Tool</span>
+          <span>Agentwatcher</span>
           <a
             href="https://github.com/PatrickTobler/agent-observation-tool"
             target="_blank"

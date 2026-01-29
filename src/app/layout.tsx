@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  title: "Agent Observation Tool",
+  title: "Agentwatcher",
   description: "Monitor, evaluate, and score your AI agents",
 };
 
