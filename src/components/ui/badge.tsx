@@ -1,8 +1,8 @@
-const statusStyles: Record<string, string> = {
-  succeeded: "bg-success-subtle text-success border-green-900/50",
-  failed: "bg-error-subtle text-error border-red-900/50",
-  unknown: "bg-bg-elevated text-text-tertiary border-border",
-  running: "bg-accent-subtle text-accent-text border-blue-900/50",
+const statusDot: Record<string, string> = {
+  succeeded: "bg-success",
+  failed: "bg-error",
+  unknown: "bg-text-muted",
+  running: "bg-accent-text",
 };
 
 const interactionStyles: Record<string, string> = {
@@ -16,9 +16,10 @@ const interactionStyles: Record<string, string> = {
 };
 
 export function StatusBadge({ status }: { status: string }) {
-  const style = statusStyles[status] || statusStyles.unknown;
+  const dot = statusDot[status] || statusDot.unknown;
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${style}`}>
+    <span className="inline-flex items-center gap-1.5 text-xs text-text-secondary">
+      <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
       {status}
     </span>
   );
@@ -27,7 +28,7 @@ export function StatusBadge({ status }: { status: string }) {
 export function InteractionBadge({ type }: { type: string }) {
   const style = interactionStyles[type] || interactionStyles.Reasoning;
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${style}`}>
+    <span className={`inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full border ${style}`}>
       {type}
     </span>
   );

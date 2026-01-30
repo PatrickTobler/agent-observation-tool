@@ -1,8 +1,27 @@
-export function StatCard({ value, label, className = "" }: { value: string | number; label: string; className?: string }) {
+export function StatCard({
+  value,
+  label,
+  color,
+  className = "",
+}: {
+  value: string | number;
+  label: string;
+  color?: "success" | "error" | "default";
+  className?: string;
+}) {
+  const colorClass =
+    color === "success"
+      ? "text-success"
+      : color === "error"
+        ? "text-error"
+        : "text-text";
+
   return (
-    <div className={`border border-border rounded-lg bg-bg-surface p-4 ${className}`}>
-      <div className="text-2xl font-semibold text-text tabular-nums">{value}</div>
-      <div className="text-xs text-text-tertiary mt-1">{label}</div>
+    <div className={`rounded-lg bg-bg-surface p-5 ${className}`}>
+      <div className={`text-3xl font-semibold tabular-nums ${colorClass}`}>
+        {value}
+      </div>
+      <div className="text-xs text-text-muted mt-1.5">{label}</div>
     </div>
   );
 }

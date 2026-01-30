@@ -3,7 +3,6 @@ import { getDb, schema } from "@/db";
 import { eq, sql } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Table, TableHead, TableBody, TableRow, TableHeaderCell, TableCell, TableHeaderRow } from "@/components/ui/table";
 import { relativeTime } from "@/lib/format";
 
 async function getWorkspaceId() {
@@ -45,14 +44,14 @@ export default async function AgentsPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold text-text mb-6">Agents</h1>
+      <h1 className="text-lg font-semibold text-text mb-8">Agents</h1>
       {agents.length === 0 ? (
         <div className="border border-border rounded-lg bg-bg-surface p-8">
           <p className="text-sm text-text-tertiary mb-1">No agents yet</p>
           <p className="text-xs text-text-muted mb-6">
             Send your first event to get started:
           </p>
-          <div className="border border-border-subtle rounded-md bg-bg overflow-hidden text-left">
+          <div className="border border-border-subtle rounded-md bg-bg overflow-hidden">
             <div className="flex items-center gap-2 px-3 py-2 border-b border-border-subtle">
               <span className="w-2 h-2 rounded-full bg-error/60" />
               <span className="w-2 h-2 rounded-full bg-warning/60" />
@@ -85,39 +84,31 @@ export default async function AgentsPage() {
           </p>
         </div>
       ) : (
-        <Table>
-          <TableHead>
-            <TableHeaderRow>
-              <TableHeaderCell>Agent</TableHeaderCell>
-              <TableHeaderCell>Tasks</TableHeaderCell>
-              <TableHeaderCell>Events</TableHeaderCell>
-              <TableHeaderCell>Errors</TableHeaderCell>
-              <TableHeaderCell>Last Seen</TableHeaderCell>
-            </TableHeaderRow>
-          </TableHead>
-          <TableBody>
-            {agents.map((agent) => (
-              <TableRow key={agent.agentName}>
-                <TableCell>
-                  <Link
-                    href={`/app/agents/${encodeURIComponent(agent.agentName)}`}
-                    className="text-text hover:text-accent transition-colors font-medium"
-                  >
-                    {agent.agentName}
-                  </Link>
-                </TableCell>
-                <TableCell mono>{agent.tasksCount}</TableCell>
-                <TableCell mono>{agent.eventsCount}</TableCell>
-                <TableCell mono className={agent.errorCount > 0 ? "text-error" : ""}>
-                  {agent.errorCount}
-                </TableCell>
-                <TableCell className="text-text-muted">
+        <div className="flex flex-col">
+          {agents.map((agent) => (
+            <Link
+              key={agent.agentName}
+              href={`/app/agents/${encodeURIComponent(agent.agentName)}`}
+              className="group flex items-center justify-between py-4 border-b border-border-subtle hover:bg-bg-surface-hover/50 -mx-2 px-2 rounded-md transition-colors"
+            >
+              <div>
+                <span className="text-sm font-medium text-text group-hover:text-accent transition-colors">
+                  {agent.agentName}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 text-xs text-text-muted tabular-nums">
+                <span>{agent.tasksCount} tasks</span>
+                <span>{agent.eventsCount} events</span>
+                {agent.errorCount > 0 && (
+                  <span className="text-error">{agent.errorCount} errors</span>
+                )}
+                <span className="w-20 text-right">
                   {agent.lastSeen ? relativeTime(agent.lastSeen) : "—"}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       )}
     </div>
   );

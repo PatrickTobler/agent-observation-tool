@@ -15,7 +15,7 @@ export function TableBody({ className = "", ...props }: HTMLAttributes<HTMLTable
 export function TableRow({ className = "", ...props }: HTMLAttributes<HTMLTableRowElement>) {
   return (
     <tr
-      className={`border-b border-border-subtle hover:bg-bg-surface-hover transition-colors ${className}`}
+      className={`border-b border-border-subtle hover:bg-bg-surface-hover/50 transition-colors ${className}`}
       {...props}
     />
   );
@@ -24,7 +24,7 @@ export function TableRow({ className = "", ...props }: HTMLAttributes<HTMLTableR
 export function TableHeaderCell({ className = "", ...props }: ThHTMLAttributes<HTMLTableCellElement>) {
   return (
     <th
-      className={`pb-2 text-xs font-medium text-text-tertiary uppercase tracking-wider text-left ${className}`}
+      className={`px-4 pb-3 text-xs font-normal text-text-muted text-left ${className}`}
       {...props}
     />
   );
@@ -33,7 +33,7 @@ export function TableHeaderCell({ className = "", ...props }: ThHTMLAttributes<H
 export function TableCell({ className = "", mono, ...props }: TdHTMLAttributes<HTMLTableCellElement> & { mono?: boolean }) {
   return (
     <td
-      className={`py-2.5 ${mono ? "font-mono text-xs tabular-nums text-text-secondary" : "text-text-secondary"} ${className}`}
+      className={`px-4 py-3 ${mono ? "font-mono text-xs tabular-nums text-text-secondary" : "text-text-secondary"} ${className}`}
       {...props}
     />
   );

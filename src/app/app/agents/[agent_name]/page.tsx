@@ -92,63 +92,65 @@ export default async function AgentDetailPage({
         ]}
       />
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <h1 className="text-lg font-semibold text-text">{agentName}</h1>
         <Link href={`/app/agents/${encodeURIComponent(agentName)}/evaluation`}>
-          <Button variant="secondary">Evaluation Config</Button>
+          <Button variant="secondary">Evaluation</Button>
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-3 mb-10">
         <StatCard value={tasks.length} label="Total Tasks" />
-        <StatCard value={succeeded} label="Succeeded" />
-        <StatCard value={failed} label="Failed" />
+        <StatCard value={succeeded} label="Succeeded" color="success" />
+        <StatCard value={failed} label="Failed" color="error" />
       </div>
 
-      {tasksWithStatus.length === 0 ? (
-        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
-          <p className="text-sm text-text-tertiary">No tasks recorded yet.</p>
-        </div>
-      ) : (
-        <Table>
-          <TableHead>
-            <TableHeaderRow>
-              <TableHeaderCell>Task ID</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
-              <TableHeaderCell>Started</TableHeaderCell>
-              <TableHeaderCell>Events</TableHeaderCell>
-              <TableHeaderCell>Score</TableHeaderCell>
-            </TableHeaderRow>
-          </TableHead>
-          <TableBody>
-            {tasksWithStatus.map((task) => {
-              const score = formatScore(task.score);
-              return (
-                <TableRow key={task.taskId}>
-                  <TableCell>
-                    <Link
-                      href={`/app/tasks/${encodeURIComponent(task.taskId)}`}
-                      className="font-mono text-xs text-text hover:text-accent transition-colors"
-                    >
-                      {task.taskId}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={task.status} />
-                  </TableCell>
-                  <TableCell className="text-text-muted">
-                    {task.startedAt ? relativeTime(task.startedAt) : "—"}
-                  </TableCell>
-                  <TableCell mono>{task.eventsCount}</TableCell>
-                  <TableCell>
-                    <span className={score.className}>{score.text}</span>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      )}
+      <div className="border-t border-border pt-6">
+        <h2 className="text-xs font-normal text-text-muted mb-4">Tasks</h2>
+
+        {tasksWithStatus.length === 0 ? (
+          <p className="text-sm text-text-tertiary py-4">No tasks recorded yet.</p>
+        ) : (
+          <Table>
+            <TableHead>
+              <TableHeaderRow>
+                <TableHeaderCell>Task</TableHeaderCell>
+                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHeaderCell>Started</TableHeaderCell>
+                <TableHeaderCell>Events</TableHeaderCell>
+                <TableHeaderCell>Score</TableHeaderCell>
+              </TableHeaderRow>
+            </TableHead>
+            <TableBody>
+              {tasksWithStatus.map((task) => {
+                const score = formatScore(task.score);
+                return (
+                  <TableRow key={task.taskId}>
+                    <TableCell>
+                      <Link
+                        href={`/app/tasks/${encodeURIComponent(task.taskId)}`}
+                        className="font-mono text-xs text-text hover:text-accent transition-colors"
+                      >
+                        {task.taskId}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={task.status} />
+                    </TableCell>
+                    <TableCell className="text-text-muted text-xs">
+                      {task.startedAt ? relativeTime(task.startedAt) : "—"}
+                    </TableCell>
+                    <TableCell mono>{task.eventsCount}</TableCell>
+                    <TableCell>
+                      <span className={`text-xs font-mono ${score.className}`}>{score.text}</span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </div>
     </div>
   );
 }

@@ -60,9 +60,9 @@ export default function ApiKeysPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold text-text mb-6">API Keys</h1>
+      <h1 className="text-lg font-semibold text-text mb-8">API Keys</h1>
 
-      <div className="mb-8 max-w-md">
+      <div className="mb-10 max-w-md">
         <div className="flex gap-2">
           <Input
             type="text"
@@ -78,11 +78,11 @@ export default function ApiKeysPage() {
         </div>
 
         {newSecret && (
-          <div className="mt-3 p-3 bg-accent-subtle border border-blue-900/50 rounded-lg">
-            <p className="text-xs text-text-tertiary mb-1.5">
+          <div className="mt-4 p-4 bg-bg-surface rounded-lg">
+            <p className="text-xs text-text-muted mb-2">
               Copy this secret now. It will not be shown again.
             </p>
-            <code className="text-sm font-mono text-accent-text break-all select-all">
+            <code className="text-sm font-mono text-text break-all select-all">
               {newSecret}
             </code>
           </div>
@@ -92,9 +92,7 @@ export default function ApiKeysPage() {
       {loading ? (
         <p className="text-sm text-text-muted">Loading...</p>
       ) : keys.length === 0 ? (
-        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
-          <p className="text-sm text-text-tertiary">No API keys yet.</p>
-        </div>
+        <p className="text-sm text-text-tertiary py-4">No API keys yet.</p>
       ) : (
         <Table>
           <TableHead>
@@ -112,17 +110,23 @@ export default function ApiKeysPage() {
               <TableRow key={k.id}>
                 <TableCell className="text-text font-medium">{k.name}</TableCell>
                 <TableCell mono>{k.prefix}...</TableCell>
-                <TableCell className="text-text-muted">
+                <TableCell className="text-text-muted text-xs">
                   {relativeTime(k.createdAt)}
                 </TableCell>
-                <TableCell className="text-text-muted">
+                <TableCell className="text-text-muted text-xs">
                   {k.lastUsedAt ? relativeTime(k.lastUsedAt) : "Never"}
                 </TableCell>
                 <TableCell>
                   {k.revokedAt ? (
-                    <span className="text-xs text-text-muted">Revoked</span>
+                    <span className="inline-flex items-center gap-1.5 text-xs text-text-muted">
+                      <span className="w-1.5 h-1.5 rounded-full bg-text-muted" />
+                      Revoked
+                    </span>
                   ) : (
-                    <span className="text-xs text-success">Active</span>
+                    <span className="inline-flex items-center gap-1.5 text-xs text-success">
+                      <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                      Active
+                    </span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">

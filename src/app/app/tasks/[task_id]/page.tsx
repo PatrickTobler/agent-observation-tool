@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { JsonViewer } from "@/components/json-viewer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { StatusBadge, InteractionBadge } from "@/components/ui/badge";
+import { InteractionBadge } from "@/components/ui/badge";
 import { formatScore, relativeTime } from "@/lib/format";
 
 async function getWorkspaceId() {
@@ -27,15 +27,27 @@ async function getWorkspaceId() {
   return session.workspaceId;
 }
 
-const typeColors: Record<string, string> = {
-  UserInput: "border-l-blue-500",
-  ToolCall: "border-l-purple-500",
-  McpCall: "border-l-purple-500",
-  SkillCall: "border-l-violet-500",
-  Reasoning: "border-l-border",
-  Result: "border-l-success",
-  Error: "border-l-error",
+const dotColors: Record<string, string> = {
+  UserInput: "bg-blue-500",
+  ToolCall: "bg-purple-500",
+  McpCall: "bg-purple-500",
+  SkillCall: "bg-violet-500",
+  Reasoning: "bg-text-muted",
+  Result: "bg-success",
+  Error: "bg-error",
 };
+
+function formatTimestamp(ts: string) {
+  const d = new Date(ts);
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}
 
 export default async function TaskDetailPage({
   params,
@@ -68,9 +80,7 @@ export default async function TaskDetailPage({
             { label: "Task not found" },
           ]}
         />
-        <div className="border border-border rounded-lg bg-bg-surface p-8 text-center">
-          <p className="text-sm text-text-tertiary">No events found for this task.</p>
-        </div>
+        <p className="text-sm text-text-tertiary py-8">No events found for this task.</p>
       </div>
     );
   }
@@ -78,7 +88,7 @@ export default async function TaskDetailPage({
   const agentName = events[0].agentName;
   const hasError = events.some((e) => e.interactionType === "Error");
   const hasResult = events.some((e) => e.interactionType === "Result");
-  const status = hasError ? "failed" : hasResult ? "succeeded" : "unknown";
+  const status = hasError ? "failed" : hasResult ? "succeeded" : "pending";
 
   const scoreRow = db
     .select({
@@ -95,6 +105,7 @@ export default async function TaskDetailPage({
     .get();
 
   const score = formatScore(scoreRow?.score ?? null);
+  const statusDot = status === "succeeded" ? "bg-success" : status === "failed" ? "bg-error" : "bg-text-muted";
 
   return (
     <div>
@@ -106,51 +117,66 @@ export default async function TaskDetailPage({
         ]}
       />
 
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-lg font-semibold text-text">Task</h1>
-          <StatusBadge status={status} />
+      <div className="mb-10">
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`w-2 h-2 rounded-full ${statusDot}`} />
+          <h1 className="text-lg font-semibold text-text">{status}</h1>
         </div>
-        <div className="text-sm text-text-muted font-mono">{taskId}</div>
-        <div className="text-sm text-text-tertiary mt-1">
-          Agent: <Link href={`/app/agents/${encodeURIComponent(agentName)}`} className="text-text hover:text-accent transition-colors">{agentName}</Link>
-        </div>
+        <p className="text-xs text-text-muted font-mono mb-4">{taskId}</p>
+
         {scoreRow && (
-          <div className="flex items-center gap-4 mt-3">
-            <span className={`text-sm font-medium ${score.className}`}>{score.text}</span>
+          <div className="rounded-lg bg-bg-surface p-5 inline-flex items-baseline gap-3">
+            <span className={`text-3xl font-semibold tabular-nums ${score.className}`}>
+              {score.text}
+            </span>
             {scoreRow.verdict && (
-              <span className="text-sm text-text-tertiary">{scoreRow.verdict}</span>
+              <span className="text-sm text-text-tertiary max-w-md">
+                {scoreRow.verdict}
+              </span>
             )}
           </div>
         )}
       </div>
 
-      <h2 className="text-xs font-medium text-text-tertiary uppercase tracking-wider mb-4">
-        Event Timeline ({events.length})
-      </h2>
+      <div className="border-t border-border pt-6">
+        <h2 className="text-xs font-normal text-text-muted mb-6">
+          Timeline ({events.length})
+        </h2>
 
-      <div className="flex flex-col gap-2">
-        {events.map((event) => (
-          <div
-            key={event.id}
-            className={`border-l-2 pl-4 py-3 ${typeColors[event.interactionType] || "border-l-border"}`}
-          >
-            <div className="flex items-center gap-2 mb-1.5">
-              <InteractionBadge type={event.interactionType} />
-              <span className="text-xs text-text-muted font-mono tabular-nums">
-                {relativeTime(event.ts)}
-              </span>
-            </div>
-            {event.message && (
-              <p className="text-sm text-text-secondary mb-2">{event.message}</p>
-            )}
-            <div className="flex flex-col gap-1">
-              <JsonViewer data={event.payloadJson} label="Payload" />
-              <JsonViewer data={event.resultJson} label="Result" />
-              <JsonViewer data={event.errorJson} label="Error" />
-            </div>
-          </div>
-        ))}
+        <div className="relative">
+          {events.map((event, i) => {
+            const isLast = i === events.length - 1;
+            const dot = dotColors[event.interactionType] || "bg-text-muted";
+
+            return (
+              <div key={event.id} className="flex gap-4 relative">
+                <div className="flex flex-col items-center w-3 shrink-0">
+                  <div className={`w-2 h-2 rounded-full mt-1.5 ${dot}`} />
+                  {!isLast && (
+                    <div className="w-px flex-1 bg-border-subtle mt-1" />
+                  )}
+                </div>
+
+                <div className={`flex-1 pb-6 ${isLast ? "pb-0" : ""}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <InteractionBadge type={event.interactionType} />
+                    <span className="text-[11px] text-text-muted font-mono tabular-nums">
+                      {formatTimestamp(event.ts)}
+                    </span>
+                  </div>
+                  {event.message && (
+                    <p className="text-sm text-text-secondary mt-1">{event.message}</p>
+                  )}
+                  <div className="flex flex-col gap-1 mt-1">
+                    <JsonViewer data={event.payloadJson} label="Payload" />
+                    <JsonViewer data={event.resultJson} label="Result" />
+                    <JsonViewer data={event.errorJson} label="Error" />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
