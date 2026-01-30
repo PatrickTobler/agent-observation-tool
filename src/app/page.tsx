@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { HeroEmailForm } from "@/components/hero-email-form";
 
 export default function Home() {
   return (
@@ -41,8 +40,21 @@ export default function Home() {
             Send one API call to log what your agent did. We score it automatically. No complicated setup, no complicated dashboard.
           </p>
 
-          <div className="mb-20 max-w-lg">
-            <HeroEmailForm />
+          <div className="flex items-center gap-3 mb-20">
+            <Link
+              href="/login"
+              className="inline-flex items-center h-9 px-4 rounded-md text-sm font-medium bg-accent text-bg hover:bg-accent-hover transition-colors"
+            >
+              Start for free
+            </Link>
+            <a
+              href="https://github.com/PatrickTobler/agent-observation-tool"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center h-9 px-4 rounded-md text-sm font-medium text-text-secondary border border-border hover:bg-bg-surface-hover hover:text-text transition-colors"
+            >
+              GitHub
+            </a>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
