@@ -97,10 +97,10 @@ export default async function AgentsPage() {
                 </span>
               </div>
               <div className="flex items-center gap-4 text-xs text-text-muted tabular-nums">
-                <span>{agent.tasksCount} tasks</span>
-                <span>{agent.eventsCount} events</span>
+                <span>{agent.tasksCount} {agent.tasksCount === 1 ? "task" : "tasks"}</span>
+                <span>{agent.eventsCount} {agent.eventsCount === 1 ? "event" : "events"}</span>
                 {agent.errorCount > 0 && (
-                  <span className="text-error">{agent.errorCount} errors</span>
+                  <span className="text-error">{agent.errorCount} {agent.errorCount === 1 ? "error" : "errors"}</span>
                 )}
                 <span className="w-20 text-right">
                   {agent.lastSeen ? relativeTime(agent.lastSeen) : "—"}

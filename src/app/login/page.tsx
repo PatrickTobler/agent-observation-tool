@@ -36,8 +36,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center">
-          <Link href="/" className="text-sm font-semibold text-text tracking-tight">
-            Agent Observation
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/logo-icon.svg" alt="" className="h-5 w-5" />
+            <span className="text-sm font-semibold text-text tracking-tight">Agentwatcher</span>
           </Link>
         </div>
       </header>

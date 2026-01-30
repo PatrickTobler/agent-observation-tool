@@ -10,11 +10,13 @@ export function StatCard({
   className?: string;
 }) {
   const colorClass =
-    color === "success"
-      ? "text-success"
-      : color === "error"
-        ? "text-error"
-        : "text-text";
+    value === 0
+      ? "text-text-muted"
+      : color === "success"
+        ? "text-success"
+        : color === "error"
+          ? "text-error"
+          : "text-text";
 
   return (
     <div className={`rounded-lg bg-bg-surface p-5 ${className}`}>
