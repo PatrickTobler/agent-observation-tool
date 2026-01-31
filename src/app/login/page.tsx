@@ -37,7 +37,7 @@ export default function LoginPage() {
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/logo-icon.svg" alt="" className="h-5 w-5" />
+            <img src="/logo-icon.svg" alt="" className="h-6 w-6" />
             <span className="text-sm font-semibold text-text tracking-tight">Agentwatcher</span>
           </Link>
         </div>

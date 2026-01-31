@@ -37,7 +37,7 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-bg-surface border-r border-border flex flex-col">
       <div className="px-4 py-4">
         <Link href="/" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Agentwatcher" className="h-5" />
+          <img src="/logo.svg" alt="Agentwatcher" className="h-7" />
         </Link>
       </div>
 
